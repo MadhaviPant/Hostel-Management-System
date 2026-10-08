@@ -1,231 +1,454 @@
 # 🏠 Smart Hostel Complaint Management System
 
-A full-stack web application for managing hostel complaints with ML-based classification, role-based dashboards, and a real-world status workflow.
+A full-stack web application that digitizes hostel complaint management by providing **role-based dashboards, automated complaint classification, priority prediction, complaint tracking, deadline monitoring, and analytics**.
+
+The system manages the complete complaint lifecycle — from submission by a student to verification, worker assignment, progress tracking, and final resolution.
 
 ---
 
-## 📁 Folder Structure
+## 🚀 Why This Project?
 
+Traditional hostel complaint management often relies on registers, verbal communication, and manual follow-ups, making it difficult to track unresolved complaints and monitor response times.
+
+This project provides a centralized system where students, wardens, and maintenance workers interact through clearly defined roles and workflows.
+
+---
+
+## ✨ Key Features
+
+### 👨‍🎓 Student
+
+- Register and log in
+- Submit complaints
+- Automatic category and priority detection
+- Track complaint status
+- View complaint history
+- Receive resolution notifications
+- Submit feedback and ratings
+
+### 👨‍💼 Admin / Warden
+
+- View and filter complaints
+- Verify complaints
+- Set resolution deadlines
+- Assign workers
+- Monitor complaint progress
+- Resolve completed complaints
+- Monitor delayed complaints
+- View analytics
+
+### 🧑‍🔧 Worker
+
+- View assigned complaints
+- View complaint details
+- Update work progress
+- Mark complaints as `In Progress`
+- Mark completed work as `Work Done`
+
+---
+
+## 🤖 Intelligent Complaint Classification
+
+When a student submits a complaint, the system analyzes its description and automatically determines:
+
+**Category → Priority → Predicted Resolution Time**
+
+```text
+Complaint Description
+        ↓
+Text Processing
+        ↓
+Weighted Keyword Matching
+        ↓
+Category Prediction
+        ↓
+Priority Detection
+        ↓
+Resolution Time Prediction
 ```
+
+### Example
+
+| Complaint | Category | Priority | ETA |
+|---|---|---|---|
+| Fan not working | Electrical | High | 4 hrs |
+| Bathroom tap leaking | Plumbing | High | 4 hrs |
+| WiFi is very slow | WiFi | Medium | 12 hrs |
+| Room not cleaned | Housekeeping | Low | 12 hrs |
+
+> **Implementation note:** The current version uses a rule-based weighted keyword classifier. It is designed so that the classification component can later be replaced with a trained NLP model.
+
+---
+
+## 🔄 Complaint Workflow
+
+```text
+Student
+   │
+   ▼
+Submit Complaint
+   │
+   ▼
+Pending
+   │
+   ▼
+Warden Verification
+   │
+   ▼
+Verified
+   │
+   ▼
+Worker Assignment
+   │
+   ▼
+Assigned
+   │
+   ▼
+In Progress
+   │
+   ▼
+Work Done
+   │
+   ▼
+Warden Confirmation
+   │
+   ▼
+Resolved
+   │
+   ▼
+Student Notification
+```
+
+The system also monitors deadlines and identifies complaints that become **Delayed**.
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend**
+
+- HTML5
+- CSS3
+- JavaScript
+
+**Backend**
+
+- Node.js
+- Express.js
+- REST APIs
+
+**Database**
+
+- MySQL
+
+**Intelligent Component**
+
+- Rule-based weighted keyword classification
+- Priority prediction
+- Resolution-time estimation
+
+**Database Engineering**
+
+- Relational schema
+- 3NF normalization
+- Foreign keys
+- Indexing
+- Transactions
+- Triggers
+- Stored procedures
+- Cursors
+- Views
+
+---
+
+## 🏗️ Architecture
+
+```text
+┌───────────────────────────────┐
+│           USERS               │
+│ Student | Warden | Worker    │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌───────────────────────────────┐
+│          FRONTEND             │
+│       HTML / CSS / JS         │
+└───────────────┬───────────────┘
+                │ REST API
+                ▼
+┌───────────────────────────────┐
+│          BACKEND              │
+│      Node.js + Express        │
+│                               │
+│ Auth | Complaints | Alerts    │
+│ Analytics | Classification    │
+└───────────┬─────────┬─────────┘
+            │         │
+            ▼         ▼
+     ┌──────────┐  ┌───────────┐
+     │Classifier│  │   MySQL   │
+     │          │  │ Database  │
+     └──────────┘  └───────────┘
+```
+
+---
+
+## 🗄️ Database Design
+
+The database is normalized to **Third Normal Form (3NF)** and separates responsibilities across multiple entities.
+
+### Main Entities
+
+```text
+Users
+Complaints
+Assignments
+Complaint History
+Feedback
+Alerts
+Notifications
+```
+
+### Database Automation
+
+**Triggers**
+
+- Automatically detect overdue complaints
+- Maintain complaint status history
+- Record resolution timestamps
+- Notify students after resolution
+
+**Stored Procedures**
+
+- Worker performance analysis
+- Average resolution time by category
+
+**Views**
+
+- Complaint summary
+- Delayed complaints
+
+This allows business rules to be enforced at the database level rather than relying entirely on application code.
+
+---
+
+## 📡 REST API
+
+### Authentication
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/auth/login` | User login |
+| POST | `/api/auth/register` | Student registration |
+| GET | `/api/auth/workers` | Retrieve workers |
+
+### Complaints
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/complaints` | Retrieve complaints |
+| GET | `/api/complaints/:id` | Complaint details |
+| POST | `/api/complaints` | Create complaint |
+| PATCH | `/api/complaints/:id/verify` | Verify complaint |
+| PATCH | `/api/complaints/:id/assign` | Assign worker |
+| PATCH | `/api/complaints/:id/status` | Update status |
+| PATCH | `/api/complaints/:id/resolve` | Resolve complaint |
+| DELETE | `/api/complaints/:id` | Delete complaint |
+
+### Analytics & Notifications
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/alerts` | Retrieve alerts |
+| POST | `/api/alerts/check-deadlines` | Check deadlines |
+| GET | `/api/alerts/notifications/:user_id` | Student notifications |
+| POST | `/api/alerts/feedback` | Submit feedback |
+| GET | `/api/alerts/analytics/summary` | Analytics |
+
+### Classification
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/ml/classify` | Classify complaint |
+
+---
+
+## 📁 Project Structure
+
+```text
 hostel_cms/
+│
 ├── backend/
-│   ├── server.js              # Express entry point
-│   ├── db.js                  # MySQL connection pool
+│   ├── server.js
+│   ├── db.js
 │   ├── package.json
-│   ├── .env.example           # Copy to .env and configure
+│   ├── .env.example
+│   │
 │   ├── ml/
-│   │   └── classifier.js      # Keyword-based ML classifier
+│   │   └── classifier.js
+│   │
 │   └── routes/
-│       ├── auth.js            # Login, register, workers list
-│       ├── complaints.js      # Full CRUD + status flow
-│       └── alerts.js          # Alerts, notifications, feedback, analytics
+│       ├── auth.js
+│       ├── complaints.js
+│       └── alerts.js
+│
 ├── frontend/
-│   ├── index.html             # Single-page application
+│   ├── index.html
 │   ├── css/
 │   │   └── style.css
 │   └── js/
-│       └── app.js             # All frontend logic
-└── hostel_cms_schema.sql      # MySQL schema (from previous step)
+│       └── app.js
+│
+└── hostel_cms_schema.sql
 ```
 
 ---
 
-## ⚙️ Prerequisites
+## 💻 Running Locally
 
-- Node.js v18+ ([nodejs.org](https://nodejs.org))
-- MySQL 8.0+ (running locally)
-- A browser (Chrome/Firefox recommended)
+### Prerequisites
 
----
+- Node.js 18+
+- MySQL 8.0+
+- MySQL Workbench
+- Modern web browser
 
-## 🚀 Steps to Run Locally
+### 1. Clone the Repository
 
-### Step 1: Set up the Database
+```bash
+git clone <YOUR_REPOSITORY_URL>
+cd hostel_cms
+```
 
-```sql
--- In MySQL Workbench or terminal:
+### 2. Set Up MySQL
+
+Import the database schema:
+
+```bash
 mysql -u root -p < hostel_cms_schema.sql
 ```
 
-This creates the `hostel_cms` database with all tables, triggers, stored procedures, views, and sample data.
+### 3. Configure Environment Variables
 
-### Step 2: Configure Backend
+Inside `backend/`, create `.env`:
 
-```bash
-cd backend
-
-# Copy environment file
-cp .env.example .env
-
-# Edit .env with your MySQL credentials:
-# DB_HOST=localhost
-# DB_USER=root
-# DB_PASSWORD=your_password
-# DB_NAME=hostel_cms
-# PORT=3000
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=hostel_cms
+PORT=3000
 ```
 
-### Step 3: Install Dependencies & Start Backend
+### 4. Install Dependencies
 
 ```bash
 cd backend
 npm install
+```
+
+### 5. Start the Application
+
+```bash
 npm start
 ```
 
-You should see:
-```
-✅ MySQL connected successfully
-🚀 Hostel CMS running at http://localhost:3000
-```
+Open:
 
-### Step 4: Open Frontend
-
-Just open your browser and go to:
-```
+```text
 http://localhost:3000
 ```
 
-The Express server serves the frontend automatically.
+---
+
+## 🔐 Demo Accounts
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | `warden@hostel.edu` | `password123` |
+| Worker | `suresh.worker@hostel.edu` | `password123` |
+| Worker | `ravi.worker@hostel.edu` | `password123` |
+| Student | `ankit@student.edu` | `password123` |
+| Student | `neha@student.edu` | `password123` |
+
+> These credentials are intended for local demonstration only.
 
 ---
 
-## 🔐 Demo Login Credentials
+## 📸 Application Preview
 
-| Role    | Email                        | Password    |
-|---------|------------------------------|-------------|
-| Admin   | warden@hostel.edu            | password123 |
-| Worker  | suresh.worker@hostel.edu     | password123 |
-| Worker  | ravi.worker@hostel.edu       | password123 |
-| Student | ankit@student.edu            | password123 |
-| Student | neha@student.edu             | password123 |
+Add screenshots here to give recruiters an immediate understanding of the project.
 
----
+**Recommended screenshots:**
 
-## 🔄 Status Flow
+- Login page
+- Student dashboard
+- Complaint submission
+- Admin/Warden dashboard
+- Worker dashboard
+- Complaint tracking
+- Analytics dashboard
 
+```text
+## 📸 Screenshots
+
+### Login
+[Add screenshot]
+
+### Student Dashboard
+[Add screenshot]
+
+### Admin Dashboard
+[Add screenshot]
+
+### Worker Dashboard
+[Add screenshot]
+
+### Complaint Tracking
+[Add screenshot]
+
+### Analytics
+[Add screenshot]
 ```
-Student submits → Pending
-       ↓
-Warden verifies → Verified  (sets deadline)
-       ↓
-Warden assigns worker → Assigned
-       ↓
-Worker starts → In Progress
-       ↓
-Worker finishes → Work Done
-       ↓
-Warden confirms → Resolved  (student notified)
-```
-
-**Rules:**
-- Worker can ONLY set: In Progress, Work Done
-- ONLY Admin can mark: Resolved
-- Deadline crossed → auto-Delayed (via trigger + API)
 
 ---
 
-## 🤖 ML Classification
+## 🎯 What I Learned
 
-**Input:** Complaint description text
+This project provided practical experience with:
 
-**Process:**
-1. Tokenize text → lowercase words
-2. Score each category using weighted keyword dictionary
-3. Pick category with highest score
-4. Determine priority using rule-based keyword matching
-5. Predict resolution time using category+priority matrix
-
-**Output:** `{ category, priority, predicted_time, confidence }`
-
-**Categories:** Electrical, Plumbing, WiFi, Housekeeping, Other
-
-**Priority:** High, Medium, Low
-
-**Test Examples:**
-- "fan not working" → Electrical, High, 4hrs
-- "water leakage from bathroom tap" → Plumbing, High, 4hrs
-- "wifi is very slow cannot attend class" → WiFi, Medium, 12hrs
-- "room not cleaned for 3 days" → Housekeeping, Low, 12hrs
+- Designing a relational database from a real-world problem
+- Building REST APIs using Node.js and Express
+- Connecting a web application with MySQL
+- Implementing role-based workflows
+- Designing normalized database schemas
+- Using SQL joins and aggregate queries
+- Implementing triggers and stored procedures
+- Managing transactions and database integrity
+- Building a rule-based text classification system
+- Connecting frontend components with backend APIs
 
 ---
 
-## 📡 API Reference
+## 🔮 Future Improvements
 
-### Auth
-| Method | Endpoint             | Description          |
-|--------|---------------------|----------------------|
-| POST   | /api/auth/login     | Login                |
-| POST   | /api/auth/register  | Student registration |
-| GET    | /api/auth/workers   | List all workers     |
-
-### Complaints
-| Method | Endpoint                          | Description            |
-|--------|----------------------------------|------------------------|
-| GET    | /api/complaints                  | List (with filters)    |
-| GET    | /api/complaints/:id              | Single complaint       |
-| POST   | /api/complaints                  | Submit complaint       |
-| PATCH  | /api/complaints/:id/verify       | Warden verify          |
-| PATCH  | /api/complaints/:id/assign       | Assign worker          |
-| PATCH  | /api/complaints/:id/status       | Worker status update   |
-| PATCH  | /api/complaints/:id/resolve      | Admin resolve          |
-| DELETE | /api/complaints/:id              | Admin delete           |
-
-### Alerts & Analytics
-| Method | Endpoint                             | Description              |
-|--------|-------------------------------------|--------------------------|
-| GET    | /api/alerts                         | List alerts              |
-| POST   | /api/alerts/check-deadlines         | Trigger deadline check   |
-| GET    | /api/alerts/notifications/:user_id  | Student notifications    |
-| POST   | /api/alerts/feedback                | Submit feedback          |
-| GET    | /api/alerts/analytics/summary       | Analytics data           |
-
-### ML
-| Method | Endpoint          | Description           |
-|--------|------------------|-----------------------|
-| POST   | /api/ml/classify | Classify description  |
+- Replace the rule-based classifier with a trained NLP model
+- Add JWT-based authentication and authorization
+- Deploy the application to the cloud
+- Add email/SMS/WhatsApp notifications
+- Support image uploads with complaints
+- Add advanced complaint trend analytics
+- Add worker workload optimization
+- Add multilingual complaint submission
 
 ---
 
-## 🗄️ Key Database Features (for viva)
+## 👩‍💻 Project Summary
 
-### Triggers (4)
-1. `trg_auto_delayed` — Auto-marks overdue complaints as Delayed
-2. `trg_log_status_change` — Auto-logs every status change to history
-3. `trg_set_resolved_at` — Auto-stamps resolved_at timestamp
-4. `trg_student_notification_on_resolve` — Auto-notifies student on resolution
+**Smart Hostel Complaint Management System** is a full-stack application built to solve a real-world hostel management problem while demonstrating practical knowledge of:
 
-### Stored Procedures with Cursors (2)
-- `CALL sp_worker_performance()` — Iterates workers, computes metrics
-- `CALL sp_avg_resolution_by_category()` — Iterates categories, computes avg time
-
-### Views (2)
-- `vw_complaint_summary` — Joined complaint data for dashboards
-- `vw_delayed_complaints` — Live view of overdue complaints
-
-### Normalization
-- All tables in **3NF**: no transitive dependencies, no redundancy
-- Separate tables for users, complaints, assignments, history, feedback, alerts, notifications
-- Proper FK constraints with CASCADE rules
+**Web Development + REST APIs + MySQL + DBMS + Intelligent Classification**
 
 ---
 
-## 🎓 DBMS Concepts Demonstrated
-
-| Concept              | Where                                |
-|---------------------|--------------------------------------|
-| CREATE TABLE         | hostel_cms_schema.sql                |
-| Primary & Foreign Keys| All 7 tables                        |
-| NOT NULL + CHECK     | rating CHECK (1–5), all required cols|
-| INDEX                | status, category, priority, deadline |
-| INSERT (CRUD)        | POST /api/complaints                 |
-| SELECT + JOIN        | GET /api/complaints (multi-join)     |
-| UPDATE (CRUD)        | PATCH /api/complaints/:id/*          |
-| DELETE (CRUD)        | DELETE /api/complaints/:id           |
-| GROUP BY + AVG       | Analytics endpoint                   |
-| TRIGGER              | 4 triggers in schema                 |
-| CURSOR               | 2 stored procedures                  |
-| TRANSACTION          | All multi-step operations            |
-| VIEW                 | vw_complaint_summary, vw_delayed     |
-| Normalization (3NF)  | Schema design                        |
-| ML Classification    | ml/classifier.js                     |
+⭐ **If you find the project interesting, feel free to explore the repository.**
