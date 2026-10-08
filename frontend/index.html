@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel CMS — Smart Complaint Management</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     LOGIN PAGE
+════════════════════════════════════════════════════════════ -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-icon">🏠</div>
+      <h1>Hostel CMS</h1>
+      <p>Smart Complaint Management System</p>
+    </div>
+
+    <!-- Login Form -->
+    <div id="login-form-wrap">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="your@email.edu" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••">
+      </div>
+      <button class="btn-login" onclick="login()">Sign In</button>
+      <p style="text-align:center;margin-top:16px;color:rgba(255,255,255,.4);font-size:12px">
+        New student? <a href="#" onclick="showRegisterForm()" style="color:var(--accent)">Create account</a>
+      </p>
+      <div style="margin-top:20px;padding:12px;background:rgba(255,255,255,.05);border-radius:8px;font-size:11px;color:rgba(255,255,255,.4)">
+        <strong style="color:rgba(255,255,255,.6)">Demo Accounts</strong><br>
+        Admin: warden@hostel.edu<br>
+        Worker: suresh.worker@hostel.edu<br>
+        Student: ankit@student.edu<br>
+        Password: <em>password123</em>
+      </div>
+    </div>
+
+    <!-- Register Form -->
+    <div id="register-form-wrap" style="display:none">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="reg-name" placeholder="Your full name">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="reg-email" placeholder="your@email.edu">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="reg-pass" placeholder="••••••••">
+      </div>
+      <div class="form-group">
+        <label>Room Number</label>
+        <input type="text" id="reg-room" placeholder="e.g. A-101">
+      </div>
+      <div class="form-group">
+        <label>Phone (optional)</label>
+        <input type="tel" id="reg-phone" placeholder="98XXXXXXXX">
+      </div>
+      <button class="btn-login" onclick="register()">Create Account</button>
+      <p style="text-align:center;margin-top:12px;color:rgba(255,255,255,.4);font-size:12px">
+        Already have an account? <a href="#" onclick="showLoginForm()" style="color:var(--accent)">Sign in</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════════════════════════ -->
+<div id="app" style="display:none;flex">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="icon">🏠</div>
+        <div>
+          <div class="name">Hostel CMS</div>
+          <div class="tagline">Complaint Portal</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-name" id="sidebar-user-name">Loading...</div>
+      <div class="user-role" id="sidebar-user-role"></div>
+    </div>
+
+    <nav class="sidebar-nav">
+
+      <!-- STUDENT NAV -->
+      <div class="nav-label" data-role="student">Student</div>
+
+      <div class="nav-item" data-role="student" data-nav="student-home"
+           onclick="navigateTo('student-home')">
+        <span class="icon">📊</span> Dashboard
+      </div>
+      <div class="nav-item" data-role="student" data-nav="student-complaints"
+           onclick="navigateTo('student-complaints')">
+        <span class="icon">📋</span> My Complaints
+      </div>
+      <div class="nav-item" data-role="student" data-nav="student-alerts"
+           onclick="navigateTo('student-alerts')">
+        <span class="icon">🔔</span> Notifications
+        <span class="nav-badge" id="notif-badge" style="display:none"></span>
+      </div>
+
+      <!-- ADMIN NAV -->
+      <div class="nav-label" data-role="admin">Warden</div>
+
+      <div class="nav-item" data-role="admin" data-nav="admin-home"
+           onclick="navigateTo('admin-home')">
+        <span class="icon">📊</span> Dashboard
+      </div>
+      <div class="nav-item" data-role="admin" data-nav="admin-complaints"
+           onclick="navigateTo('admin-complaints')">
+        <span class="icon">📋</span> All Complaints
+      </div>
+      <div class="nav-item" data-role="admin" data-nav="admin-analytics"
+           onclick="navigateTo('admin-analytics')">
+        <span class="icon">📈</span> Analytics
+      </div>
+      <div class="nav-item" data-role="admin" data-nav="admin-alerts"
+           onclick="navigateTo('admin-alerts')">
+        <span class="icon">🚨</span> Alerts
+        <span class="nav-badge" id="alert-badge"></span>
+      </div>
+
+      <!-- WORKER NAV -->
+      <div class="nav-label" data-role="worker">Worker</div>
+
+      <div class="nav-item" data-role="worker" data-nav="worker-home"
+           onclick="navigateTo('worker-home')">
+        <span class="icon">🔧</span> My Tasks
+      </div>
+      <div class="nav-item" data-role="worker" data-nav="worker-alerts"
+           onclick="navigateTo('worker-alerts')">
+        <span class="icon">⏰</span> My Alerts
+        <span class="nav-badge" id="worker-alert-badge"></span>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="nav-item" onclick="logout()" style="color:#EF4444">
+        <span class="icon">🚪</span> Logout
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-actions">
+        <button class="notif-btn" onclick="navigateTo(currentUser?.role === 'student' ? 'student-alerts' : 'admin-alerts')">
+          🔔 <span class="notif-dot" id="notif-dot"></span>
+        </button>
+        <span style="font-size:12px;color:var(--text-muted)">Smart Hostel CMS v2.0</span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ─────────────────────────────────────────────────────
+           STUDENT HOME
+      ───────────────────────────────────────────────────── -->
+      <div id="page-student-home" class="page">
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <div class="stat-value" id="s-total">—</div>
+            <div class="stat-label">Total Complaints</div>
+            <div class="stat-icon">📋</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-value" id="s-resolved">—</div>
+            <div class="stat-label">Resolved</div>
+            <div class="stat-icon">✅</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-value" id="s-pending">—</div>
+            <div class="stat-label">Pending</div>
+            <div class="stat-icon">⏳</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-value" id="s-delayed">—</div>
+            <div class="stat-label">Delayed</div>
+            <div class="stat-icon">🚨</div>
+          </div>
+        </div>
+
+        <!-- Complaint Form -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🆕 Raise New Complaint</div>
+            </div>
+            <div class="card-body">
+              <div class="form-group-light">
+                <label>Describe your issue</label>
+                <textarea class="app-input" id="complaint-desc" rows="5"
+                  placeholder="e.g. The ceiling fan in room A-101 is not working since yesterday..."
+                  oninput="onDescriptionInput(this.value)"></textarea>
+              </div>
+
+              <div id="ml-result" style="display:none" class="ml-result">
+                <div>
+                  <span class="label">🤖 Category:</span>
+                  <span class="value" id="ml-category">—</span>
+                </div>
+                <div>
+                  <span class="label">Priority:</span>
+                  <span class="value" id="ml-priority">—</span>
+                </div>
+                <div>
+                  <span class="label">Est. Time:</span>
+                  <span class="value" id="ml-time">—</span>
+                </div>
+                <div>
+                  <span class="label">Confidence:</span>
+                  <span id="ml-conf">—</span>
+                </div>
+              </div>
+
+              <button class="btn btn-primary btn-full" style="margin-top:14px" onclick="submitComplaint()">
+                Submit Complaint
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📋 Recent Complaints</div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th><th>Category</th><th>Description</th>
+                    <th>Status</th><th>Priority</th><th>Time</th>
+                  </tr>
+                </thead>
+                <tbody id="s-recent-tbody">
+                  <tr><td colspan="6"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────────────────────────
+           STUDENT COMPLAINTS
+      ───────────────────────────────────────────────────── -->
+      <div id="page-student-complaints" class="page">
+        <div class="section-title">My Complaints</div>
+        <div class="card">
+          <div class="card-body" style="padding-bottom:0">
+            <div class="filters-row">
+              <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input class="app-input" placeholder="Search..." style="padding-left:32px"
+                  oninput="loadStudentComplaints()">
+              </div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>Description</th><th>Category</th>
+                  <th>Priority</th><th>Status</th><th>Submitted</th><th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="s-complaints-tbody">
+                <tr><td colspan="7"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────────────────────────
+           STUDENT NOTIFICATIONS
+      ───────────────────────────────────────────────────── -->
+      <div id="page-student-alerts" class="page">
+        <div class="section-title">My Notifications</div>
+        <div class="card">
+          <div class="card-body" id="notif-container">
+            <div class="loading"><div class="spinner"></div> Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────────────────────────
+           ADMIN HOME
+      ───────────────────────────────────────────────────── -->
+      <div id="page-admin-home" class="page">
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <div class="stat-value" id="a-total">—</div>
+            <div class="stat-label">Total Complaints</div>
+            <div class="stat-icon">📋</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-value" id="a-pending">—</div>
+            <div class="stat-label">Pending Review</div>
+            <div class="stat-icon">⏳</div>
+          </div>
+          <div class="stat-card purple">
+            <div class="stat-value" id="a-verified">—</div>
+            <div class="stat-label">Verified (Unassigned)</div>
+            <div class="stat-icon">✔</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-value" id="a-delayed">—</div>
+            <div class="stat-label">Delayed</div>
+            <div class="stat-icon">🚨</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-value" id="a-resolved">—</div>
+            <div class="stat-label">Resolved</div>
+            <div class="stat-icon">✅</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📋 Recent Complaints (needs action)</div>
+            <button class="btn btn-sm btn-secondary" onclick="navigateTo('admin-complaints')">View All</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>Student</th><th>Description</th>
+                  <th>Category</th><th>Priority</th><th>Status</th><th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="a-recent-tbody">
+                <tr><td colspan="7"><div class="loading"><div class="spinner"></div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────────────────────────
+           ADMIN COMPLAINTS
+      ───────────────────────────────────────────────────── -->
+      <div id="page-admin-complaints" class="page">
+        <div class="section-title">All Complaints</div>
+        <div class="card">
+          <div class="card-body" style="padding-bottom:0">
+            <div class="filters-row">
+              <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input class="app-input" id="filter-search" placeholder="Search..." style="padding-left:32px"
+                  oninput="loadAdminComplaints()">
+              </div>
+              <select class="app-input app-select" id="filter-status" onchange="loadAdminComplaints()">
+                <option value="">All Statuses</option>
+                <option>Pending</option><option>Verified</option><option>Assigned</option>
+                <option>In Progress</option><option>Work Done</option>
+                <option>Resolved</option><option>Delayed</option>
+              </select>
+              <select class="app-input app-select" id="filter-category" onchange="loadAdminComplaints()">
+                <option value="">All Categories</option>
+                <option>Electrical</option><option>Plumbing</option>
+                <option>WiFi</option><option>Housekeeping</option><option>Other</option>
+              </select>
+              <button class="btn btn-secondary" onclick="loadAdminComplaints()">🔄 Refresh</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>Student</th><th>Description</th>
+                  <th>Category</th><th>Priority</th><th>Status</th><th>Deadline</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="a-complaints-tbody">
+                <tr><td colspan="8"><div class="loading"><div class="spinner"></div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────────────────────────
+           ADMIN ANALYTICS
+      ───────────────────────────────────────────────────── -->
+      <div id="page-admin-analytics" class="page">
+        <div class="section-title">Analytics Dashboard</div>
+
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <div class="stat-value" id="an-total">—</div>
+            <div class="stat-label">Total Complaints</div>
+            <div class="stat-icon">📋</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-value" id="an-resolved">—</div>
+            <div class="stat-label">Resolved</div>
+            <div class="stat-icon">✅</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-value" id="an-delayed">—</div>
+            <div class="stat-label">Delayed</div>
+            <div class="stat-icon">🚨</div>
+          </div>
+          <div class="stat-card teal">
+            <div class="stat-value" id="an-avg-hrs">—</div>
+            <div class="stat-label">Avg Resolution Time</div>
+            <div class="stat-icon">⏱</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-value" id="an-avg-rating">—</div>
+            <div class="stat-label">Avg Feedback Rating</div>
+            <div class="stat-icon">⭐</div>
+          </div>
+        </div>
+
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-title">Complaints by Category</div>
+            <div style="height:240px"><canvas id="chart-category"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Complaints by Status</div>
+            <div style="height:240px"><canvas id="chart-status"></canvas></div>
+          </div>
+          <div class="chart-card" style="grid-column: 1 / -1">
+            <div class="chart-title">Monthly Complaint Trend</div>
+            <div style="height:200px"><canvas id="chart-trend"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px">
+          <div class="card-header"><div class="card-title">👷 Worker Performance</div></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Worker</th><th>Assigned</th><th>Resolved</th><th>Resolution Rate</th><th>Avg Rating</th></tr>
+              </thead>
+              <tbody id="worker-perf-tbody">
+                <tr><td colspan="5" class="text-muted" style="padding:20px">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────────────────────────
+           ADMIN ALERTS
+      ───────────────────────────────────────────────────── -->
+      <div id="page-admin-alerts" class="page">
+        <div class="section-title">System Alerts</div>
+        <div style="display:flex;gap:12px;margin-bottom:16px">
+          <button class="btn btn-primary" onclick="checkAlerts().then(() => loadAdminAlerts())">
+            🔄 Check Deadlines Now
+          </button>
+        </div>
+        <div class="card">
+          <div class="card-body" id="admin-alerts-container">
+            <div class="loading"><div class="spinner"></div> Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────────────────────────
+           WORKER HOME
+      ───────────────────────────────────────────────────── -->
+      <div id="page-worker-home" class="page">
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <div class="stat-value" id="w-assigned">—</div>
+            <div class="stat-label">Total Assigned</div>
+            <div class="stat-icon">📋</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-value" id="w-inprogress">—</div>
+            <div class="stat-label">In Progress</div>
+            <div class="stat-icon">🔧</div>
+          </div>
+          <div class="stat-card teal">
+            <div class="stat-value" id="w-workdone">—</div>
+            <div class="stat-label">Work Done</div>
+            <div class="stat-icon">📤</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-value" id="w-resolved">—</div>
+            <div class="stat-label">Resolved</div>
+            <div class="stat-icon">✅</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🔧 My Assigned Tasks</div>
+            <button class="btn btn-sm btn-secondary" onclick="loadWorkerDashboard()">🔄 Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>Student</th><th>Description</th>
+                  <th>Category</th><th>Priority</th><th>Status</th><th>Deadline</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="w-tasks-tbody">
+                <tr><td colspan="8"><div class="loading"><div class="spinner"></div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────────────────────────────────
+           WORKER ALERTS
+      ───────────────────────────────────────────────────── -->
+      <div id="page-worker-alerts" class="page">
+        <div class="section-title">My Alerts</div>
+        <div class="card">
+          <div class="card-body" id="worker-alerts-container">
+            <div class="loading"><div class="spinner"></div> Loading...</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODALS
+════════════════════════════════════════════════════════════ -->
+
+<!-- Verify Complaint Modal -->
+<div class="modal-overlay" id="modal-verify">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">✅ Verify Complaint</div>
+      <button class="modal-close" onclick="closeModal('modal-verify')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="verify-complaint-id">
+      <div class="form-group-light">
+        <label>Final Resolution Time (hours)</label>
+        <input class="app-input" type="number" id="verify-final-time" min="1" max="240"
+          placeholder="e.g. 8">
+        <div class="text-muted" style="margin-top:4px">
+          System-predicted time shown above. You may adjust before confirming.
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn btn-primary" onclick="verifyComplaint()">Confirm & Verify</button>
+        <button class="btn btn-secondary" onclick="closeModal('modal-verify')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Assign Worker Modal -->
+<div class="modal-overlay" id="modal-assign">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">👷 Assign Worker</div>
+      <button class="modal-close" onclick="closeModal('modal-assign')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="assign-complaint-id">
+      <div class="form-group-light">
+        <label>Select Worker</label>
+        <select class="app-input app-select" id="assign-worker-select">
+          <option value="">Loading workers...</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn btn-warning" onclick="assignWorker()">Assign</button>
+        <button class="btn btn-secondary" onclick="closeModal('modal-assign')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Complaint Detail Modal -->
+<div class="modal-overlay" id="modal-detail">
+  <div class="modal" style="width:600px">
+    <div class="modal-header">
+      <div class="modal-title">📋 Complaint Details</div>
+      <button class="modal-close" onclick="closeModal('modal-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="modal-detail-body">Loading...</div>
+  </div>
+</div>
+
+<!-- Feedback Modal -->
+<div class="modal-overlay" id="modal-feedback">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">⭐ Submit Feedback</div>
+      <button class="modal-close" onclick="closeModal('modal-feedback')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="feedback-complaint-id">
+      <div class="form-group-light">
+        <label>Rating (1 = Poor, 5 = Excellent)</label>
+        <select class="app-input app-select" id="feedback-rating">
+          <option value="">Select rating</option>
+          <option value="5">⭐⭐⭐⭐⭐ — Excellent</option>
+          <option value="4">⭐⭐⭐⭐ — Good</option>
+          <option value="3">⭐⭐⭐ — Average</option>
+          <option value="2">⭐⭐ — Poor</option>
+          <option value="1">⭐ — Very Poor</option>
+        </select>
+      </div>
+      <div class="form-group-light">
+        <label>Comment (optional)</label>
+        <textarea class="app-input" id="feedback-comment" rows="3"
+          placeholder="Share your experience..."></textarea>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn btn-primary" onclick="submitFeedback()">Submit Feedback</button>
+        <button class="btn btn-secondary" onclick="closeModal('modal-feedback')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Worker Work Done Remarks Modal -->
+<div class="modal-overlay" id="modal-remarks">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">✅ Mark Work Done</div>
+      <button class="modal-close" onclick="closeModal('modal-remarks')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="remarks-complaint-id">
+      <div class="form-group-light">
+        <label>Work Remarks</label>
+        <textarea class="app-input" id="remarks-text" rows="4"
+          placeholder="Describe what was done, parts used, etc."></textarea>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn btn-success" onclick="submitWorkDone()">Mark as Work Done</button>
+        <button class="btn btn-secondary" onclick="closeModal('modal-remarks')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

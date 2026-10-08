@@ -1,0 +1,24 @@
+description,category
+fan not working,Electrical
+light flickering,Electrical
+switch not working,Electrical
+socket burned,Electrical
+no electricity,Electrical
+,
+water leakage,Plumbing
+tap not working,Plumbing
+toilet blocked,Plumbing
+bathroom overflow,Plumbing
+no water supply,Plumbing
+,
+wifi not working,WiFi
+internet slow,WiFi
+network disconnected,WiFi
+wifi weak signal,WiFi
+router not working,WiFi
+,
+room dirty,Housekeeping
+garbage not collected,Housekeeping
+dust everywhere,Housekeeping
+bathroom dirty,Housekeeping
+bad smell,Housekeeping
